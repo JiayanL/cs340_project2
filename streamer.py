@@ -17,9 +17,14 @@ class Streamer:
     def send(self, data_bytes: bytes) -> None:
         """Note that data_bytes can be larger than one packet."""
         # Your code goes here!  The code below should be changed!
+        # Support sending data larger than 1472 bytes by breaiking data_bytes into chunks 
+        bytes_list = []
+        for i in range(0, len(data_bytes), 1472):
+            bytes_list.append(data_bytes[i:i+1472])
 
         # for now I'm just sending the raw application-level data in one UDP payload
-        self.socket.sendto(data_bytes, (self.dst_ip, self.dst_port))
+        for data_byte in bytes_list:
+            self.socket.sendto(data_byte, (self.dst_ip, self.dst_port))
 
     def recv(self) -> bytes:
         """Blocks (waits) if no data is ready to be read from the connection."""
